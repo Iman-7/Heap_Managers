@@ -53,34 +53,34 @@ void free(void *ptr){
 
         //Either add at the end of the list or merge with the last block
         if(free_itr->ptr < itr->ptr){ 
-            if(free_itr->ptr + free_itr->size == itr->ptr - 32){ //Merging
-                free_itr->size = free_itr->size + itr->size + 32;
-            }else{
+            //if(free_itr->ptr + free_itr->size == itr->ptr - 32){ //Merging
+            //    free_itr->size = free_itr->size + itr->size + 32;
+            //}else{
                 free_itr->next = itr;
                 itr->prev = free_itr;
                 itr->next = NULL;
-            }
+            //}
         }
         //free_itr points to the first block with address bigger than the one we are freeing
         else{ 
             // Check merging with the previous block
-            if(free_itr->prev->ptr + free_itr->prev->size == itr->ptr - 32){ //Merging
-                free_itr->prev->size = free_itr->prev->size + itr->size +32;
-            }
+            //if(free_itr->prev->ptr + free_itr->prev->size == itr->ptr - 32){ //Merging
+            //    free_itr->prev->size = free_itr->prev->size + itr->size +32;
+            //}
             // Check merging with the next block
-            else if(itr->ptr + itr->size == free_itr->ptr - 32){
-               itr->size = free_itr->size + itr->size + 32;
-               free_itr->prev->next = itr;
-               itr->prev = free_itr->prev;
-               itr->next = free_itr->next;
-               if(free_itr->next != NULL) free_itr->next->prev = itr;
-            }
-            else{ // Insert in the middle of the list
+            //else if(itr->ptr + itr->size == free_itr->ptr - 32){
+            //   itr->size = free_itr->size + itr->size + 32;
+            //   free_itr->prev->next = itr;
+            //   itr->prev = free_itr->prev;
+            //   itr->next = free_itr->next;
+            //   if(free_itr->next != NULL) free_itr->next->prev = itr;
+            //}
+            //else{ // Insert in the middle of the list
                 free_itr->prev->next = itr;
                 itr->prev = free_itr->prev;
                 itr->next = free_itr;
                 free_itr->prev = itr;
-            } 
+            //} 
 
         }
 
@@ -133,22 +133,29 @@ void * malloc(size_t size){
 
     if(result == NULL){
         result = sbrk(0);
-        sbrk(size + 32);
+        int new_size;
+        if(size % 8 == 0){
+            new_size = sizeof(struct block) + size;
+        }else{
+            new_size = sizeof(struct block) + (size/8 + 1)*8;
+        }
+         
+        sbrk(new_size);
         if(sbrk(0) == result) {
             errno = ENOMEM;
             return NULL;
         }
         //struct block new_block = {result, size, NULL, NULL};
-        //*result = {result + 32, size, NULL, NULL};
+        //*result = {result sizeof(struct block), size, NULL, NULL};
         struct block* new_block = result;
-        new_block->ptr = result + 32; 
-        new_block->size = size; 
+        new_block->ptr = result + sizeof(struct block); 
+        new_block->size = new_size - sizeof(struct block); 
         new_block->next = NULL; 
         new_block->prev = NULL;
         insert_utilized(new_block);
     }
 
-    return result + 32;
+    return result + sizeof(struct block);
 }
 
 void * calloc(size_t nelem, size_t elsize){
@@ -177,9 +184,14 @@ void * realloc(void * ptr, size_t size){
         itr = itr->next;
     }
 
+    if(size%8 != 0){
+        size = (size/8 + 1)*8;
+    }
+
     size_t old_size = itr->size;
     if(size <= old_size){ // If new size is smaller than or equal, no need to move memory
         itr->size = size;
+        // We should add the remaining part to the free list
         return ptr;
     }else{
         void *new_ptr = malloc(size); // Pointer to new memory block with new size
