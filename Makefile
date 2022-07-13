@@ -104,7 +104,7 @@ am__objects_1 = array$U.$(OBJEXT) awkgram$U.$(OBJEXT) \
 	getopt1$U.$(OBJEXT) io$U.$(OBJEXT) main$U.$(OBJEXT) \
 	msg$U.$(OBJEXT) node$U.$(OBJEXT) random$U.$(OBJEXT) \
 	re$U.$(OBJEXT) regex$U.$(OBJEXT) replace$U.$(OBJEXT) \
-	version$U.$(OBJEXT) allocate$U.$(OBJEXT)
+	version$U.$(OBJEXT) malloc$U.$(OBJEXT)
 am_gawk_OBJECTS = $(am__objects_1) eval$U.$(OBJEXT) \
 	profile$U.$(OBJEXT)
 gawk_OBJECTS = $(am_gawk_OBJECTS)
@@ -130,7 +130,7 @@ DEP_FILES = ./$(DEPDIR)/array$U.Po \
 	./$(DEPDIR)/profile_p$U.Po ./$(DEPDIR)/random$U.Po \
 	./$(DEPDIR)/re$U.Po ./$(DEPDIR)/regex$U.Po \
 	./$(DEPDIR)/replace$U.Po ./$(DEPDIR)/version$U.Po \
-	./$(DEPDIR)/allocate$U.Po
+	./$(DEPDIR)/malloc$U.Po
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -354,7 +354,7 @@ base_sources = \
 	regex.c \
 	regex.h \
 	replace.c \
-	allocate.c \
+	malloc.c \
 	version.in \
 	version.c
 
@@ -500,7 +500,7 @@ include ./$(DEPDIR)/random$U.Po
 include ./$(DEPDIR)/re$U.Po
 include ./$(DEPDIR)/regex$U.Po
 include ./$(DEPDIR)/replace$U.Po
-include ./$(DEPDIR)/allocate$U.Po
+include ./$(DEPDIR)/malloc$U.Po
 include ./$(DEPDIR)/version$U.Po
 
 .c.o:
@@ -562,15 +562,15 @@ replace_.c: replace.c $(ANSI2KNR)
 	$(CPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) `if test -f $(srcdir)/replace.c; then echo $(srcdir)/replace.c; else echo replace.c; fi` | sed 's/^# \([0-9]\)/#line \1/' | $(ANSI2KNR) > $@ || rm -f $@
 version_.c: version.c $(ANSI2KNR)
 	$(CPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) `if test -f $(srcdir)/version.c; then echo $(srcdir)/version.c; else echo version.c; fi` | sed 's/^# \([0-9]\)/#line \1/' | $(ANSI2KNR) > $@ || rm -f $@
-allocate_.c: allocate.c $(ANSI2KNR)
-	$(CPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) `if test -f $(srcdir)/allocate.c; then echo $(srcdir)/allocate.c; else echo allocate.c; fi` | sed 's/^# \([0-9]\)/#line \1/' | $(ANSI2KNR) > $@ || rm -f $@
+malloc_.c: malloc.c $(ANSI2KNR)
+	$(CPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) `if test -f $(srcdir)/malloc.c; then echo $(srcdir)/malloc.c; else echo malloc.c; fi` | sed 's/^# \([0-9]\)/#line \1/' | $(ANSI2KNR) > $@ || rm -f $@
 
 array_.$(OBJEXT) awkgram_.$(OBJEXT) builtin_.$(OBJEXT) dfa_.$(OBJEXT) \
 eval_.$(OBJEXT) eval_p_.$(OBJEXT) ext_.$(OBJEXT) field_.$(OBJEXT) \
 gawkmisc_.$(OBJEXT) getopt_.$(OBJEXT) getopt1_.$(OBJEXT) io_.$(OBJEXT) \
 main_.$(OBJEXT) msg_.$(OBJEXT) node_.$(OBJEXT) profile_.$(OBJEXT) \
 profile_p_.$(OBJEXT) random_.$(OBJEXT) re_.$(OBJEXT) regex_.$(OBJEXT) \
-replace_.$(OBJEXT) allocate_.$(OBJEXT) version_.$(OBJEXT) : $(ANSI2KNR)
+replace_.$(OBJEXT) malloc_.$(OBJEXT) version_.$(OBJEXT) : $(ANSI2KNR)
 
 .y.c:
 	$(SHELL) $(YLWRAP) $< y.tab.c $@ y.tab.h $*.h y.output $*.output -- $(YACCCOMPILE)
